@@ -16,5 +16,6 @@ resource "aws_db_instance" "myrds" {
   publicly_accessible  =  true
   port                 = 5432    
   db_name              = "ecf"
-  
+  vpc_security_group_ids = ["${aws_security_group.rds_sg.id}"]
+  multi_az             = true
 }
