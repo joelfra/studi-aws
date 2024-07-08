@@ -2,7 +2,7 @@
 provider "aws" {
     region     = "${var.region}"
 }
-
+/*
 #create a RDS Database Instance
 resource "aws_db_instance" "myrds" {
   engine               = "Postgres"
@@ -19,3 +19,4 @@ resource "aws_db_instance" "myrds" {
   vpc_security_group_ids = ["${aws_security_group.rds_sg.id}"]
   multi_az             = true
 }
+*/
