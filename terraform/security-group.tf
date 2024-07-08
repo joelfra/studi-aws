@@ -21,7 +21,7 @@ resource "aws_security_group" "rds_sg" {
 # EC2 security group
 resource "aws_security_group" "my_sg" {
   name        = "my-sg"
-  vpc_id      = aws_vpc.main.id
+ description = "Security group for EC2"
 
   ingress {
     description      = "Allow http from everywhere"
@@ -32,9 +32,9 @@ resource "aws_security_group" "my_sg" {
   }
 
     ingress {
-    description      = "Allow http from everywhere"
-    from_port        = 8080
-    to_port          = 8080
+    description      = "Allow http from jenkins"
+    from_port        = 8081
+    to_port          = 8081
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
   }
