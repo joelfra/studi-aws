@@ -22,6 +22,8 @@ resource "aws_security_group" "rds_sg" {
 resource "aws_security_group" "my_sg" {
   name        = "my-sg"
  description = "Security group for EC2"
+  vpc_id      = aws_vpc.main.id
+
 
   ingress {
     description      = "Allow http from everywhere"
