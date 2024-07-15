@@ -1,0 +1,38 @@
+Resources:
+  # OAC
+  CloudFrontOriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Description: "origin access control(OAC) for allowing cloudfront to access S3 bucket"
+        Name: static-hosting-OAC
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+ # cloudFront
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: "studi-react-website.s3.eu-west-3.amazonaws.com"
+            Id: static-hosting
+            CustomOriginConfig:
+              HTTPPort: 80 # required
+              HTTPSPort: 443 # required
+              OriginProtocolPolicy: 'http-only' # required
+        Enabled: "true"
+        DefaultRootObject: index.html
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+          Compress: true
+          TargetOriginId: static-hosting
+          ForwardedValues:
+            QueryString: "false"
+            Cookies:
+              Forward: none
+          ViewerProtocolPolicy: redirect-to-https
+      
