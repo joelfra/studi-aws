@@ -4,8 +4,8 @@ resource "aws_security_group" "rds_sg" {
  description = "Security group for RDS"
 
  ingress {
-  from_port = 3306
-  to_port = 3306
+  from_port = 5432
+  to_port = 5432
   protocol = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
    }

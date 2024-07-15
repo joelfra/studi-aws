@@ -2,6 +2,7 @@
 resource "aws_instance" "instance_a" {
   ami           = var.ami_id
   instance_type = var.instance_type
+  key_name      = var.key_pair_name
   vpc_security_group_ids = ["${aws_security_group.my_sg.id}"]
   subnet_id = aws_subnet.subnet_3a.id
 
@@ -27,6 +28,7 @@ resource "aws_instance" "instance_a" {
 resource "aws_instance" "instance_b" {
   ami           = var.ami_id
   instance_type = var.instance_type
+  key_name      = var.key_pair_name
   vpc_security_group_ids = ["${aws_security_group.my_sg.id}"]
   subnet_id = aws_subnet.subnet_3b.id
 
