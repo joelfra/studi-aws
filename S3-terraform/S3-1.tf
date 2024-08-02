@@ -1,6 +1,37 @@
 resource "aws_s3_bucket" "s3_bucket" {
  bucket = "studi-react-website"
  region = "eu-west-3"
+
+ versioning {
+    enabled = true
+  }
+  
+ replication_configuration {
+    role = aws_iam_role.replication.arn
+
+    rules {
+      id     = "foobar"
+      status = "Enabled"
+
+      filter {
+        tags = {}
+      }
+      destination {
+        bucket        = aws_s3_bucket.s3_bucket_2.arn
+
+        replication_time {
+          status  = "Enabled"
+          minutes = 15
+        }
+
+        metrics {
+          status  = "Enabled"
+          minutes = 15
+        }
+      }
+    }
+  }
+
   tags = {
     name = "studi-react-website"
   }
