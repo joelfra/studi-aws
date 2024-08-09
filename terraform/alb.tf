@@ -16,7 +16,7 @@ resource "aws_route_table" "public" {
 
 # associate the route table with public subnet 1
 resource "aws_route_table_association" "rta1" {
-  subnet_id      = aws_subnet.subnet_3.id
+  subnet_id      = aws_subnet.subnet_3c.id
   route_table_id = aws_route_table.public.id
 }
 # associate the route table with public subnet 2
@@ -73,8 +73,7 @@ resource "aws_lb" "lb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.my_sg.id]
-  subnets            = [aws_subnet.subnet_3a.id, aws_subnet.subnet_3b.id]
-  depends_on         = [aws_internet_gateway.gw]
+  subnets            = [aws_subnet.subnet_3c.id, aws_subnet.subnet_3d.id]
 }
 
 resource "aws_lb_target_group" "alb_tg" {
@@ -94,3 +93,49 @@ resource "aws_lb_listener" "front_end" {
   }
 }
 
+# Launch Template and Security Group
+resource "aws_launch_template" "launch_template" {
+  name          = "aws-launch"
+  image_id      = var.ami_id
+  instance_type = var.instance_type
+
+  network_interfaces {
+    device_index    = 0
+    security_groups = [aws_security_group.my_sg.id]
+  }
+  user_data = base64encode("${var.ec2_user_data}")
+
+  tags = {
+    Name = "asg-ec2"
+  }
+}
+
+
+resource "aws_autoscaling_group" "auto_scaling_group" {
+  desired_capacity    = 2
+  max_size            = 5
+  min_size            = 2
+  vpc_zone_identifier = [aws_subnet.subnet_3a.id, aws_subnet.subnet_3b.id]
+  target_group_arns   = [aws_lb_target_group.alb_tg.arn]
+  name = "ec2-asg"
+
+  launch_template {
+    id      = aws_launch_template.launch_template.id
+    version = aws_launch_template.launch_template.latest_version
+  }
+}
+
+variable "ec2_user_data" {
+  type        = string
+  default     = <<-EOF
+             #!/bin/bash
+             sudo apt-get update
+             sudo apt-get install -y nginx
+             sudo systemctl start nginx
+             sudo systemctl enable nginx
+             echo '<!doctype html>
+             <html lang="en"><h1>Home page 1 !</h1></br>
+             <h3>(Instance A)</h3>
+             </html>' | sudo tee /var/www/html/index.html
+             EOF
+}

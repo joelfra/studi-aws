@@ -18,6 +18,7 @@ resource "aws_security_group" "rds_sg" {
   }
 }
 
+
 # EC2 security group
 resource "aws_security_group" "my_sg" {
   name        = "my-sg"
@@ -34,9 +35,9 @@ resource "aws_security_group" "my_sg" {
   }
 
     ingress {
-    description      = "Allow http from jenkins"
-    from_port        = 8081
-    to_port          = 8081
+    description      = "Allow http from CodeDeploy"
+    from_port        = 443
+    to_port          = 443
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
   }
